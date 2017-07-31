@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>dbyll</title>
+		<description>Stylish Jekyll Theme</description>
+		<link>/</link>
+		<atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>测试</title>
+				<description>&lt;p&gt;#我是测试blog
+一二三四五六七&lt;/p&gt;
+</description>
+				<pubDate>Mon, 31 Jul 2017 00:00:00 +0800</pubDate>
+				<link>/2017/07/31/test.html</link>
+				<guid isPermaLink="true">/2017/07/31/test.html</guid>
+			</item>
+		
+	</channel>
+</rss>
