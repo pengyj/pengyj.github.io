@@ -2,9 +2,9 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>测试</title>
+	<title>将文件隐藏在图片里</title>
 	
-	<meta name="author" content="dbyll">
+	<meta name="author" content="PengElement">
 
 	<!-- Enable responsive viewport -->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -42,23 +42,15 @@
 				<span class="icon-bar"></span>
 			</button>
 			
-			<a type="button" class="navbar-toggle nav-link" href="http://github.com/dbtek">
-				<i class="fa fa-github"></i>
-			</a>
 			
 			
-			<a type="button" class="navbar-toggle nav-link" href="http://twitter.com/dbtek">
-				<i class="fa fa-twitter"></i>
-			</a>
-			
-			
-			<a type="button" class="navbar-toggle nav-link" href="mailto:dbyll@ismaildemirbilek.com">
+			<a type="button" class="navbar-toggle nav-link" href="mailto:pengelement@gmail.com">
 				<i class="fa fa-envelope"></i>
 			</a>
 			
 			<a class="navbar-brand" href="/">
-				<img src="//www.gravatar.com/avatar/726351295ec82e145928582f595aa3aa?s=35" class="img-circle" />
-				dbyll
+				<img src="//www.gravatar.com/avatar/?s=35" class="img-circle" />
+				PengElement
 			</a>
 		</div>
 
@@ -90,38 +82,26 @@
 		<!-- sidebar.html -->
 <header class="sidebar-header" role="banner">
 	<a href="/">
-		<img src="//www.gravatar.com/avatar/726351295ec82e145928582f595aa3aa?s=150" class="img-circle" />
+		<img src="/assets/avatar/avatar.jpg" class="img-circle" />
 	</a>
 	<h3 class="title">
-        <a href="/">dbyll</a>
+        <a href="/">PengElement</a>
     </h3>
 </header>
 
 
 <div id="bio" class="text-center">
-	Your stylish, minimalist theme!
+	80后空巢老人
 </div>
 
 
 <div id="contact-list" class="text-center">
 	<ul class="list-unstyled list-inline">
 		
-		<li>
-			<a class="btn btn-default btn-sm" href="https://github.com/dbtek">
-				<i class="fa fa-github-alt fa-lg"></i>
-			</a>
-		</li>
 		
 		
 		<li>
-			<a class="btn btn-default btn-sm" href="https://twitter.com/dbtek">
-				<i class="fa fa-twitter fa-lg"></i>
-			</a>
-		</li>
-		
-		
-		<li>
-			<a class="btn btn-default btn-sm" href="mailto:dbyll@ismaildemirbilek.com">
+			<a class="btn btn-default btn-sm" href="mailto:pengelement@gmail.com">
 				<i class="fa fa-envelope fa-lg"></i>
 			</a>
 		</li>
@@ -129,21 +109,9 @@
 	</ul>
 	<ul id="contact-list-secondary" class="list-unstyled list-inline">
 		
-		<li>
-			<a class="btn btn-default btn-sm" href="https://pinterest.com/asd123">
-				<i class="fa fa-pinterest fa-lg"></i>
-			</a>
-		</li>
-		
 		
 		<li>
-			<a class="btn btn-default btn-sm" href="https://linkedin.com/in/asd123">
-				<i class="fa fa-linkedin fa-lg"></i>
-			</a>
-		</li>
-		
-		<li>
-			<a class="btn btn-default btn-sm" href="/feed.xml">
+			<a class="btn btn-default btn-sm" href="/">
 				<i class="fa fa-rss fa-lg"></i>
 			</a>
 		</li>
@@ -155,7 +123,7 @@
 
 	<div class="col-sm-9 col-sm-offset-3">
 		<div class="page-header">
-  <h1>测试 </h1>
+  <h1>将文件隐藏在图片里 </h1>
 </div>
 	
 <article>
@@ -163,19 +131,93 @@
 	<div class="col-sm-10">
 	 <span class="post-date">
 	   
-	   July 
-	   31st,
-	     
-	   2017
+	   December 
+	   4th,
+	   
+	   2016
 	 </span>
 	  <div class="article_body">
-	  <p>#我是测试blog
-一二三四五六七</p>
+	  <p>#将文件隐藏在图片里
+##环境</p>
+<ul>
+  <li>Mac OSX 10.12.4</li>
+</ul>
+
+<p>##工具</p>
+<ul>
+  <li>Mac Terminal</li>
+</ul>
+
+<p>##命令</p>
+<ul>
+  <li>zip、unzip</li>
+  <li>cat</li>
+</ul>
+
+<p>##压缩
+我有一个文件，比如叫test.mp3，想把它隐藏到一张叫test.png的图片里。</p>
+
+<p>####压缩test.mp3</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>zip output.zip test.mp3
+</code></pre>
+</div>
+
+<p>如果需要加密，可以带上-P命令。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>zip -P 123456 output.zip test.mp3
+</code></pre>
+</div>
+
+<p>####将压缩包写入图片</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>cat test.png output.zip &gt; final.png
+</code></pre>
+</div>
+<p>这样就得到了最终的图片了，正常是看不到里面的数据的。</p>
+
+<p>##解压</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>unzip final.png 
+</code></pre>
+</div>
 
 	  </div>
 
+		
+		<ul class="tag_box list-unstyled list-inline">
+		  <li><i class="fa fa-folder-open"></i></li>
+		  
+		  
+			 
+				<li><a href="/categories.html#peng-ref">
+					peng <span>(2)</span>
+					,
+				</a></li>
+			 
+				<li><a href="/categories.html#group-ref">
+					group <span>(4)</span>
+					
+				</a></li>
+			
+		  
+		</ul>
 		  
 
+		
+		<ul class="list-inline">
+		  <li><i class="fa fa-tags"></i></li>
+		  
+		  
+			 
+				<li>
+					<a href="/tags.html#命令行-ref">
+					命令行 <span>(2)</span>
+					
+					</a>
+				</li>
+			
+		  
+		  
+		</ul>
 		  
 
 		<hr>
@@ -183,7 +225,7 @@
 		<div>
       <section class="share col-sm-6">
         <h4 class="section-title">Share Post</h4>
-        <a class="btn btn-default btn-sm twitter" href="http://twitter.com/share?text=测试&via=dbtek"
+        <a class="btn btn-default btn-sm twitter" href="http://twitter.com/share?text=将文件隐藏在图片里"
            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
           <i class="fa fa-twitter fa-lg"></i>
           Twitter
@@ -201,9 +243,9 @@
       </section>
 
       <section class="col-sm-6 author">
-        <img src="//www.gravatar.com/avatar/726351295ec82e145928582f595aa3aa" class="img-rounded author-image" />
-        <h4 class="section-title author-name">dbyll</h4>
-        <p class="author-bio">Your stylish, minimalist theme!</p>
+        <img src="//www.gravatar.com/avatar/" class="img-rounded author-image" />
+        <h4 class="section-title author-name">PengElement</h4>
+        <p class="author-bio">80后空巢老人</p>
       </section>
     </div>
 
@@ -214,7 +256,7 @@
 		  <li class="previous disabled"><a>&larr; Previous</a></li>
 		  
 		  
-			<li class="next disabled"><a>Next &rarr;</a>
+		  <li class="next"><a href="/peng/group/2017/07/31/test.html" title="测试">Next &rarr;</a></li>
 		  
 		</ul>
 
@@ -234,7 +276,7 @@
 		<footer>
 			<hr/>
 			<p>
-				&copy; 2017 dbyll with <a href="http://jekyllrb.com/">Jekyll</a>. Theme: <a href="https://github.com/dbtek/dbyll">dbyll</a> by dbtek.
+				&copy; 2017 PengElement with <a href="http://jekyllrb.com/">Jekyll</a>. Theme: <a href="https://github.com/dbtek/dbyll">dbyll</a> by dbtek.
 			</p>
 		</footer>
 	</div>

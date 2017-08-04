@@ -18,7 +18,6 @@ body{
 }
 .sidebar-header .title{
 	letter-spacing: 3px;
-	text-transform: uppercase;
 }
 
 .sidebar-header .title a{
@@ -38,7 +37,7 @@ a.nav-link:hover { color: #777; }
 
 #bio {
 	font-family: "Courier New", Courier, monospace;
-	font-size: 11px;
+	font-size: 16px;
 	margin: 0 auto;
 	margin-bottom: 10px;
 }
@@ -92,8 +91,10 @@ article .share .gplus:hover {
     }
 }
 
-article{
-	margin-bottom: 40px;
+article {
+	margin-bottom: 60px;
+	padding: 0 5% 0;
+	border-color: #C13929;
 }
 
 .article_body{
@@ -102,13 +103,9 @@ article{
 }
 
 .post-date {
-	text-transform: uppercase;
-	font-size: 14px;
-	letter-spacing: 3px;
-}
-
-article {
-	padding: 0 5% 0;
+	font-size: 12px;
+	letter-spacing: 1px;
+	color: #2c3e50;
 }
 
 article.home div a, article.home pre a { color: #2c3e50; }

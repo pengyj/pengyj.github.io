@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>天网恢恢，肥而不腻</title>
+	<title>将文件隐藏在图片里2</title>
 	
 	<meta name="author" content="PengElement">
 
@@ -123,44 +123,153 @@
 
 	<div class="col-sm-9 col-sm-offset-3">
 		<div class="page-header">
-  <h1>天网恢恢，肥而不腻 </h1>
+  <h1>将文件隐藏在图片里2 </h1>
+</div>
+	
+<article>
+
+	<div class="col-sm-10">
+	 <span class="post-date">
+	   
+	   August 
+	   2nd,
+	     
+	   2017
+	 </span>
+	  <div class="article_body">
+	  <p>#将文件隐藏在图片里
+##环境</p>
+<ul>
+  <li>Mac OSX 10.12.4</li>
+</ul>
+
+<p>##工具</p>
+<ul>
+  <li>Mac Terminal</li>
+</ul>
+
+<p>##命令</p>
+<ul>
+  <li>zip、unzip</li>
+  <li>cat</li>
+</ul>
+
+<p>##压缩
+我有一个文件，比如叫test.mp3，想把它隐藏到一张叫test.png的图片里。</p>
+
+<p>####压缩test.mp3</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>zip output.zip test.mp3
+</code></pre>
 </div>
 
-<!----------------------------------------------------------------
-     _ _           _ _          
-  __| | |__  _   _| | |         Ascii arts included in this page:
- / _` | '_ \| | | | | |         - R2D2, provided by: http://www.chris.com/
-| (_| | |_) | |_| | | |         - Texts, generated from: http://www.network-science.de/ascii/
- \__,_|_.__/ \__, |_|_|         http://github.com/dbtek/dbyll
--------------|___/------------------------------------------------>
+<p>如果需要加密，可以带上-P命令。</p>
 
-  <style>
-    pre {
-          background: none;
-          border: none;
-    }
-  </style>
+<div class="highlighter-rouge"><pre class="highlight"><code>zip -P 123456 output.zip test.mp3
+</code></pre>
+</div>
 
-  <pre>
+<p>####将压缩包写入图片</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>cat test.png output.zip &gt; final.png
+</code></pre>
+</div>
+<p>这样就得到了最终的图片了，正常是看不到里面的数据的。</p>
 
-                       444444444       000000000            444444444   
-                      4::::::::4     00:::::::::00         4::::::::4  
-                     4:::::::::4   00:::::::::::::00      4:::::::::4  
-                    4::::44::::4  0:::::::000:::::::0    4::::44::::4  
-                   4::::4 4::::4  0::::::0   0::::::0   4::::4 4::::4  
-                  4::::4  4::::4  0:::::0     0:::::0  4::::4  4::::4  
-                 4::::4   4::::4  0:::::0     0:::::0 4::::4   4::::4  
-                4::::444444::::4440:::::0 000 0:::::04::::444444::::444
-                4::::::::::::::::40:::::0 000 0:::::04::::::::::::::::4
-                4444444444:::::4440:::::0     0:::::04444444444:::::444
-                          4::::4  0:::::0     0:::::0          4::::4  
-                          4::::4  0::::::0   0::::::0          4::::4  
-                          4::::4  0:::::::000:::::::0          4::::4  
-                        44::::::44 00:::::::::::::00         44::::::44
-                        4::::::::4   00:::::::::00           4::::::::4
-                        4444444444     000000000             4444444444
+<p>##解压</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>unzip final.png 
+</code></pre>
+</div>
 
-    </pre>
+	  </div>
+
+		
+		<ul class="tag_box list-unstyled list-inline">
+		  <li><i class="fa fa-folder-open"></i></li>
+		  
+		  
+			 
+				<li><a href="/categories.html#test-ref">
+					test <span>(2)</span>
+					,
+				</a></li>
+			 
+				<li><a href="/categories.html#group-ref">
+					group <span>(4)</span>
+					
+				</a></li>
+			
+		  
+		</ul>
+		  
+
+		
+		<ul class="list-inline">
+		  <li><i class="fa fa-tags"></i></li>
+		  
+		  
+			 
+				<li>
+					<a href="/tags.html#命令行-ref">
+					命令行 <span>(2)</span>
+					
+					</a>
+				</li>
+			
+		  
+		  
+		</ul>
+		  
+
+		<hr>
+
+		<div>
+      <section class="share col-sm-6">
+        <h4 class="section-title">Share Post</h4>
+        <a class="btn btn-default btn-sm twitter" href="http://twitter.com/share?text=将文件隐藏在图片里2"
+           onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+          <i class="fa fa-twitter fa-lg"></i>
+          Twitter
+        </a>
+        <a class="btn btn-default btn-sm facebook" href="https://www.facebook.com/sharer/sharer.php"
+           onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+          <i class="fa fa-facebook fa-lg"></i>
+          Facebook
+        </a>
+        <a class="btn btn-default btn-sm gplus"
+           onclick="window.open('https://plus.google.com/share?url='+window.location.href, 'google-plus-share', 'width=490,height=530');return false;">
+          <i class="fa fa-google-plus fa-lg"></i>
+          Google+
+        </a>
+      </section>
+
+      <section class="col-sm-6 author">
+        <img src="//www.gravatar.com/avatar/" class="img-rounded author-image" />
+        <h4 class="section-title author-name">PengElement</h4>
+        <p class="author-bio">80后空巢老人</p>
+      </section>
+    </div>
+
+    <div class="clearfix"></div>
+
+		<ul class="pager">
+		  
+		  <li class="previous"><a href="/peng/group/2017/07/31/test.html" title="测试">&larr; Previous</a></li>
+		  
+		  
+		  <li class="next"><a href="/test/group/2017/08/03/%E5%9B%BE%E7%89%87%E6%96%87%E4%BB%B6%E9%9A%90%E8%97%8F%E7%9A%84%E5%89%AF%E6%9C%AC1.html" title="将文件隐藏在图片里1">Next &rarr;</a></li>
+		  
+		</ul>
+
+		<hr>
+	</div>
+	
+	<div class="col-sm-2 sidebar-2">
+	
+	</div>
+</article>
+<div class="clearfix"></div>
+
+
 
 
 
