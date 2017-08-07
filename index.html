@@ -15,7 +15,7 @@ tagline:
   </h2>
 
   <div>
-    {{ post.excerpt | remove: '<p>' | remove: '</p>' | remove: '<li>' | remove: '</li>' | remove: '<ul>' | remove: '</ul>'}}
+    {{ post.excerpt | strip_html}}
   </div>
 
 </article>

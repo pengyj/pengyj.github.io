@@ -42,6 +42,14 @@
 				<span class="icon-bar"></span>
 			</button>
 			
+			<a type="button" class="navbar-toggle nav-link" href="http://github.com/pengyj">
+				<i class="fa fa-github"></i>
+			</a>
+			
+			
+			<a type="button" class="navbar-toggle nav-link" href="http://twitter.com/pengelement">
+				<i class="fa fa-twitter"></i>
+			</a>
 			
 			
 			<a type="button" class="navbar-toggle nav-link" href="mailto:pengelement@gmail.com">
@@ -57,9 +65,9 @@
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="/">Home</a></li>
-				<li><a href="/categories.html">Categories</a></li>
-				<li><a href="/tags.html">Tags</a></li>
+				<li class="active"><a href="/">主页目录</a></li>
+				<li><a href="/categories.html">分类</a></li>
+				<li><a href="/tags.html">标签</a></li>
 			</ul>
 		</div><!-- /.navbar-collapse -->
 	</nav>
@@ -70,9 +78,9 @@
 			<i class="fa fa-bars"></i>
 		</button>
 		<ul class="dropdown-menu" role="menu">
-			<li><a href="/"><i class="fa fa-home"></i>Home</a></li>
-			<li><a href="/categories.html"><i class="fa fa-folder"></i>Categories</a></li>
-			<li><a href="/tags.html"><i class="fa fa-tags"></i>Tags</a></li>
+			<li><a href="/"><i class="fa fa-home"></i>主页目录</a></li>
+			<li><a href="/categories.html"><i class="fa fa-folder"></i>分类</a></li>
+			<li><a href="/tags.html"><i class="fa fa-tags"></i>标签</a></li>
 			<li class="divider"></li>
 			<li><a href="#"><i class="fa fa-arrow-up"></i>Top of Page</a></li>
 		</ul>
@@ -91,13 +99,27 @@
 
 
 <div id="bio" class="text-center">
-	80后空巢老人
+	iOS Developer
 </div>
 
 
 <div id="contact-list" class="text-center">
 	<ul class="list-unstyled list-inline">
+		<!-- 
+
+		<li>
+			<a class="btn btn-default btn-sm" href="https://github.com/pengyj">
+				<i class="fa fa-github-alt fa-lg"></i>
+			</a>
+		</li>
+ -->
 		
+		
+		<li>
+			<a class="btn btn-default btn-sm" href="https://twitter.com/pengelement">
+				<i class="fa fa-twitter fa-lg"></i>
+			</a>
+		</li>
 		
 		
 		<li>
@@ -108,10 +130,8 @@
 		
 	</ul>
 	<ul id="contact-list-secondary" class="list-unstyled list-inline">
-		
-		
 		<li>
-			<a class="btn btn-default btn-sm" href="/">
+			<a class="btn btn-default btn-sm" href="/feed.xml">
 				<i class="fa fa-rss fa-lg"></i>
 			</a>
 		</li>
@@ -130,12 +150,8 @@
 
 	<div class="col-sm-10">
 	 <span class="post-date">
-	   
-	   December 
-	   4th,
-	   
-	   2016
-	 </span>
+	2017.8.7
+  	</span>
 	  <div class="article_body">
 	  <h2 id="目标">目标</h2>
 <p>我有一个文件，比如叫test.mp3，想把它隐藏到一张叫test.png的图片里。</p>
@@ -223,42 +239,26 @@
 		  
 
 		<hr>
-
-		<div>
-      <section class="share col-sm-6">
-        <h4 class="section-title">Share Post</h4>
-        <a class="btn btn-default btn-sm twitter" href="http://twitter.com/share?text=将文件隐藏在图片里"
-           onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
-          <i class="fa fa-twitter fa-lg"></i>
-          Twitter
-        </a>
-        <a class="btn btn-default btn-sm facebook" href="https://www.facebook.com/sharer/sharer.php"
-           onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
-          <i class="fa fa-facebook fa-lg"></i>
-          Facebook
-        </a>
-        <a class="btn btn-default btn-sm gplus"
-           onclick="window.open('https://plus.google.com/share?url='+window.location.href, 'google-plus-share', 'width=490,height=530');return false;">
-          <i class="fa fa-google-plus fa-lg"></i>
-          Google+
-        </a>
-      </section>
-
-      <section class="col-sm-6 author">
-        <img src="//www.gravatar.com/avatar/" class="img-rounded author-image" />
-        <h4 class="section-title author-name">PengElement</h4>
-        <p class="author-bio">80后空巢老人</p>
-      </section>
-    </div>
+	<script type="text/javascript" src="/assets/resources/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="/assets/src/jquery.qrcode.js"></script>
+	<script type="text/javascript" src="/assets/src/qrcode.js"></script>
+	
+	<div id="qrcode"></div>
+	<img id='imgQRcode'/>  
+	<script>
+		var qrcode= $('#qrcode').qrcode(location.href).hide(); 
+		var canvas=qrcode.find('canvas').get(0);  
+		$('#imgQRcode').attr('src',canvas.toDataURL('image/jpg'))  
+	</script>
 
     <div class="clearfix"></div>
 
 		<ul class="pager">
 		  
-		  <li class="previous disabled"><a>&larr; Previous</a></li>
+		  <li class="previous"><a href="/vps/2017/08/04/ssh%E5%AE%89%E5%85%A8%E7%9B%B8%E5%85%B3.html" title="完全小白ssh安全优化">&larr; 较旧</a></li>
 		  
 		  
-			<li class="next disabled"><a>Next &rarr;</a>
+			<li class="next disabled"><a>较新 &rarr;</a>
 		  
 		</ul>
 

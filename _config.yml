@@ -15,7 +15,7 @@ defaults:
     scope:
       path: "" # empty string for all files
     values:
-      title: 天网恢恢，肥而不腻
+      title: be afraid of standing still
       #这里是右边顶部分的标题
 
 description: Stylish Jekyll Theme
@@ -23,10 +23,13 @@ author:
 #这里的name网页最下面的名字
   name: PengElement
   email: pengelement@gmail.com
-  bio: 80后空巢老人
+  github: pengyj
+  twitter: pengelement
+  bio: iOS Developer
 
 categories_path: categories.html
 tags_path: tags.html
+rss_path: feed.xml
 
 BASE_PATH:
 
