@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Tags</title>
+	<title>将文件隐藏在图片里</title>
 	
 	<meta name="author" content="PengElement">
 
@@ -143,92 +143,134 @@
 
 	<div class="col-sm-9 col-sm-offset-3">
 		<div class="page-header">
-  <h1>Tags </h1>
+  <h1>将文件隐藏在图片里 </h1>
+</div>
+	
+<article>
+
+	<div class="col-sm-10">
+	 <span class="post-date">
+	2017.8.8
+  	</span>
+	  <div class="article_body">
+	  <h2 id="目标">目标</h2>
+<p>我有一个文件，比如叫test.mp3，想把它隐藏到一张叫test.png的图片里。</p>
+<h2 id="环境">环境</h2>
+<ul>
+  <li>Mac OSX 10.12.4</li>
+</ul>
+
+<h2 id="工具">工具</h2>
+<ul>
+  <li>Mac Terminal</li>
+</ul>
+
+<h2 id="命令">命令</h2>
+<ul>
+  <li>zip、unzip</li>
+  <li>cat</li>
+</ul>
+
+<h2 id="压缩">压缩</h2>
+
+<p>压缩test.mp3</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>zip output.zip test.mp3
+</code></pre>
 </div>
 
+<p>如果需要加密，可以带上-P命令。</p>
 
-
-
-
-<div class="col-sm-3 col-xs-6">
-    <ul class="nav nav-tabs-vertical cat-tag-menu">
-    
-      
-      <li>
-          <a href="#ssh-ref">
-            ssh<span class="badge pull-right">1</span>
-         </a>
-      </li>
-   
-      
-      <li>
-          <a href="#加密-ref">
-            加密<span class="badge pull-right">1</span>
-         </a>
-      </li>
-   
-      
-      <li>
-          <a href="#压缩-ref">
-            压缩<span class="badge pull-right">1</span>
-         </a>
-      </li>
-   
-      
-      <li>
-          <a href="#安全-ref">
-            安全<span class="badge pull-right">1</span>
-         </a>
-      </li>
-   
-   </ul>
-</div>
-<!-- Tab panes -->
-<div class="tab-content col-sm-9 col-xs-6">
-  
-    
-    <div class="tab-pane" id="ssh-ref">
-      <h2 style="margin-top: 0px">Posts tagged  with ssh</h2>
-      <ul class="list-unstyled">
-        
-          <li style="line-height: 35px;"><a href="/vps/2017/08/08/ssh%E5%AE%89%E5%85%A8%E7%9B%B8%E5%85%B3.html">完全小白ssh安全优化</a> <span class="text-muted">- 2017.8.8</span></li>
-        
-      </ul>
-    </div>
-  
-    
-    <div class="tab-pane" id="加密-ref">
-      <h2 style="margin-top: 0px">Posts tagged  with 加密</h2>
-      <ul class="list-unstyled">
-        
-          <li style="line-height: 35px;"><a href="/%E5%A5%87%E6%8A%80%E6%B7%AB%E5%B7%A7/2017/08/08/%E5%9B%BE%E7%89%87%E6%96%87%E4%BB%B6%E9%9A%90%E8%97%8F.html">将文件隐藏在图片里</a> <span class="text-muted">- 2017.8.8</span></li>
-        
-      </ul>
-    </div>
-  
-    
-    <div class="tab-pane" id="压缩-ref">
-      <h2 style="margin-top: 0px">Posts tagged  with 压缩</h2>
-      <ul class="list-unstyled">
-        
-          <li style="line-height: 35px;"><a href="/%E5%A5%87%E6%8A%80%E6%B7%AB%E5%B7%A7/2017/08/08/%E5%9B%BE%E7%89%87%E6%96%87%E4%BB%B6%E9%9A%90%E8%97%8F.html">将文件隐藏在图片里</a> <span class="text-muted">- 2017.8.8</span></li>
-        
-      </ul>
-    </div>
-  
-    
-    <div class="tab-pane" id="安全-ref">
-      <h2 style="margin-top: 0px">Posts tagged  with 安全</h2>
-      <ul class="list-unstyled">
-        
-          <li style="line-height: 35px;"><a href="/vps/2017/08/08/ssh%E5%AE%89%E5%85%A8%E7%9B%B8%E5%85%B3.html">完全小白ssh安全优化</a> <span class="text-muted">- 2017.8.8</span></li>
-        
-      </ul>
-    </div>
-  
+<div class="highlighter-rouge"><pre class="highlight"><code>zip -P 123456 output.zip test.mp3
+</code></pre>
 </div>
 
+<p>将压缩包写入图片</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>cat test.png output.zip &gt; final.png
+</code></pre>
+</div>
+<p>这样就得到了最终的图片了，正常是看不到里面的数据的。</p>
+
+<h2 id="解压">解压</h2>
+<div class="highlighter-rouge"><pre class="highlight"><code>unzip final.png 
+</code></pre>
+</div>
+
+	  </div>
+
+		
+		<ul class="tag_box list-unstyled list-inline">
+		  <li><i class="fa fa-folder-open"></i></li>
+		  
+		  
+			 
+				<li><a href="/categories.html#奇技淫巧-ref">
+					奇技淫巧 <span>(1)</span>
+					
+				</a></li>
+			
+		  
+		</ul>
+		  
+
+		
+		<ul class="list-inline">
+		  <li><i class="fa fa-tags"></i></li>
+		  
+		  
+			 
+				<li>
+					<a href="/tags.html#压缩-ref">
+					压缩 <span>(1)</span>
+					,
+					</a>
+				</li>
+			 
+				<li>
+					<a href="/tags.html#加密-ref">
+					加密 <span>(1)</span>
+					
+					</a>
+				</li>
+			
+		  
+		  
+		</ul>
+		  
+
+		<hr>
+	<script type="text/javascript" src="/assets/resources/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="/assets/src/jquery.qrcode.js"></script>
+	<script type="text/javascript" src="/assets/src/qrcode.js"></script>
+	
+	<div id="qrcode"></div>
+	<img id='imgQRcode'/>  
+	<script>
+		var qrcode= $('#qrcode').qrcode(location.href).hide(); 
+		var canvas=qrcode.find('canvas').get(0);  
+		$('#imgQRcode').attr('src',canvas.toDataURL('image/jpg'))  
+	</script>
+
+    <div class="clearfix"></div>
+
+		<ul class="pager">
+		  
+		  <li class="previous"><a href="/vps/2017/08/08/ssh%E5%AE%89%E5%85%A8%E7%9B%B8%E5%85%B3.html" title="完全小白ssh安全优化">&larr; 较旧</a></li>
+		  
+		  
+			<li class="next disabled"><a>较新 &rarr;</a>
+		  
+		</ul>
+
+		<hr>
+	</div>
+	
+	<div class="col-sm-2 sidebar-2">
+	
+	</div>
+</article>
 <div class="clearfix"></div>
+
 
 
 
