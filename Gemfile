@@ -6,3 +6,5 @@ group :jekyll_plugins do
   gem "pygments.rb"
 end
 
+gem 'jekyll-admin', group: :jekyll_plugins
+
