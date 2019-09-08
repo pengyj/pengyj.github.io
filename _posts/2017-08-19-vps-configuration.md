@@ -3,6 +3,7 @@ layout: post
 title: 完全小白ssh安全优化
 categories: vps
 tags: ssh 安全
+description: 我的搬瓦工忘记续费被收回了，想它~
 ---
 前几天买了个vps服务，于是玩了一把,对ssh的安全进行优化。
 

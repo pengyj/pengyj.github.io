@@ -3,6 +3,7 @@ layout: post
 title: Centos安装Nginx+SSL证书(VPS相关二)
 categories: vps
 tags: ssh 安全
+description: 免费的证书，还挺好用的
 ---
 ## 环境
 * Mac OSX 操作 
