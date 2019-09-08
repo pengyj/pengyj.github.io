@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+
+    
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>与Lua调用交互（不使用第三方库） | Feierbn</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="与Lua调用交互（不使用第三方库）" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="研究这块东西的起因" />
+<meta property="og:description" content="研究这块东西的起因" />
+<link rel="canonical" href="http://localhost:4000/ios/2016/01/15/OC%E4%B8%8ELua%E8%B0%83%E7%94%A8%E4%BA%A4%E4%BA%92-%E4%B8%8D%E4%BD%BF%E7%94%A8%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93.html" />
+<meta property="og:url" content="http://localhost:4000/ios/2016/01/15/OC%E4%B8%8ELua%E8%B0%83%E7%94%A8%E4%BA%A4%E4%BA%92-%E4%B8%8D%E4%BD%BF%E7%94%A8%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93.html" />
+<meta property="og:site_name" content="Feierbn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-01-15T00:00:00+08:00" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/ios/2016/01/15/OC%E4%B8%8ELua%E8%B0%83%E7%94%A8%E4%BA%A4%E4%BA%92-%E4%B8%8D%E4%BD%BF%E7%94%A8%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93.html","headline":"与Lua调用交互（不使用第三方库）","dateModified":"2016-01-15T00:00:00+08:00","datePublished":"2016-01-15T00:00:00+08:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/ios/2016/01/15/OC%E4%B8%8ELua%E8%B0%83%E7%94%A8%E4%BA%A4%E4%BA%92-%E4%B8%8D%E4%BD%BF%E7%94%A8%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93.html"},"description":"研究这块东西的起因","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+  </head>
+  <body>
+  	<a class="back-to-home" href="/"><< Home</a>
+  
+    <header class="page-header2" role="banner">
+      <h1 class="project-name">与Lua调用交互（不使用第三方库）</h1>
+      <h2 class="project-tagline">看过我的文，我们就是朋友了~「无中生友警告❗️」</h2>
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h2 id="研究这块东西的起因">研究这块东西的起因</h2>
+
+<p>既不是为了当成游戏里的脚本用；也不是为了用lua调用原生控件实现跨平台；只是为了保持和我司Android端的部分关键算法一致，所以把这部分代码写成了lua。</p>
+
+<p>起初查资料，会有wax、cocos2d之类的内容，但是我们并需要这么“重量级”的东西，就一个lua文件，所以最后决定用C和lua交互，自己写。</p>
+
+<p>目前这部分东西已经在线上跑了1年+，至少是可以用的。</p>
+
+<p>分享一部分有关键代码和最初开发思路。</p>
+
+<h2 id="达到目标">达到目标</h2>
+
+<p>1.正确传参</p>
+<ul>
+  <li>基础数据格式：BOOL、Number、NSString</li>
+  <li>NSArray、NSDictonary等复杂参数传入</li>
+</ul>
+
+<p>2.实现返回数据</p>
+<ul>
+  <li>基础数据格式：BOOL、Number、NSString</li>
+  <li>NSArray、NSDictonary等复杂参数返回值</li>
+</ul>
+
+<h2 id="添加lua">添加Lua</h2>
+
+<p><a href="http://www.lua.org/download.html">下载Lua</a>，将src目录改名为lua，拖进项目。删除掉lua.c和luac.c</p>
+
+<p>这个时候编译是成功的。</p>
+
+<p>我使用的版本是Lua 5.1.4，当初为了与安卓团队的第三方jar包版本保持一致。新版本应该语法有一些改变。</p>
+
+<h2 id="lua这边有用的东西">Lua这边有用的东西</h2>
+
+<p>这是我在调试lua的table用的print，因为会用到时间戳，所以有个地方判断了数字，lua里的print是不能输出table的格式，可比NSLog不方便多了。于是在网上搜索了下资料，最后对应我们自己的需求做了一点点调整，原网页已经找不回来了，没法放在参考链接里了。</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tab = "    "
+
+dateOutput = true
+
+function print_r(t)
+	print_table(t, 0)
+end
+
+function print_table(t, i)
+    local indent ="" -- i缩进，当前调用缩进
+    for j = 0, i do
+        indent = indent .. tab
+    end
+    for k, v in pairs(t) do
+        if (type(v) == "table") then -- type(v) 当前类型时否table 如果是，则需要递归，
+        		local key = ""
+        		if type(k) ~= "number" then
+        			key = k
+        			end
+            print(indent ..key, "{")
+            print_table(v, i + 1) -- 递归调用
+            print(indent .. "}")
+        else -- 否则直接输出当前值
+        	if (dateOutput and type(v) == "number" and v &gt; 100000) then
+        		v = os.date("%x", v)
+			end
+			if type(v)=="boolean" then
+				v=(v and "true") or "false"
+			end
+            print(indent  .. k .. "=" .. v..",")
+        end
+    end
+end
+</code></pre></div></div>
+
+<h2 id="lua测试文件">Lua测试文件</h2>
+
+<ol>
+  <li>简单测试，在lua端成功print出东西
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function test()
+    print("成功啦!")
+end
+</code></pre></div>    </div>
+  </li>
+  <li>向lua传值
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function simpleParam(value)
+    print(value)
+end
+</code></pre></div>    </div>
+  </li>
+  <li>从lua拿值
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function simpleParam()
+    return 5,9
+end
+</code></pre></div>    </div>
+  </li>
+  <li>向lua传NSArray或者NSDictionarys
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function complexParam(value)
+    print_r(value)
+end
+</code></pre></div>    </div>
+  </li>
+  <li>从lua拿值
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function complexParam()
+    local s1 = {name = "a", age = 20}
+    local s2 = {name = "b", age = 19}
+    return {s1, s2}
+end
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="oc生成lua的state">OC生成Lua的state</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>state = luaL_newstate();
+luaL_openlibs(state);
+lua_settop(state, 0);
+
+NSString *luaFilePath = [[NSBundle mainBundle] pathForResource:@"file" ofType:@"lua"];
+NSString *luaContent = [NSString stringWithContentsOfFile:luaFilePath
+                                                 encoding:NSUTF8StringEncoding
+                                                    error:nil];
+
+int err;
+if (luaContent == nil || [luaContent isEqualToString: @""]) {
+    NSLog(@"Lua_State initial fail，lua file is nil");
+}else {
+    err = luaL_loadstring(state, [luaContent cStringUsingEncoding: NSUTF8StringEncoding]);
+    if (0 != err) {
+        luaL_error(state, "cannot compile the lua file: %s",
+                   lua_tostring(state, -1));
+        return;
+    }
+    
+    err = lua_pcall(state, 0, 0, 0);
+    if (0 != err) {
+        luaL_error(state, "cannot run the lua file: %s",
+                   lua_tostring(state, -1));
+        return;
+    }
+    
+    NSLog(@"Lua_state initial success");
+}
+</code></pre></div></div>
+
+<h2 id="oc调用">OC调用</h2>
+
+<ol>
+  <li>简单测试，在lua端成功print出东西
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lua_State* state = [[LuaBinding shareBinding] state];
+lua_getglobal(state,"test");
+lua_pcall(state, 0, 0, 0);
+</code></pre></div>    </div>
+  </li>
+  <li>向lua传值
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lua_State* state = [[LuaBinding shareBinding] state];
+lua_getglobal(state,"simpleParam");
+lua_pushnumber(state, 7);
+lua_pcall(state, 1, 0, 0);
+</code></pre></div>    </div>
+  </li>
+  <li>从lua拿值
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lua_State* state = [[LuaBinding shareBinding] state];
+lua_getglobal(state,"simpleParam");
+lua_pcall(state, 0, 2, 0);
+NSInteger result1 = (NSInteger)lua_tointeger(state, -1);
+lua_pop(state, 1);
+NSInteger result2 = (NSInteger)lua_tointeger(state, -1);
+lua_pop(state, 1);
+NSLog(@"%ld,%ld", (long)result1,(long)result2);
+</code></pre></div>    </div>
+  </li>
+  <li>向lua传NSArray或者NSDictionarys
+这里可没有可以直接用的lua_pushXXXX的东西来用了，我现在的处理方式是自己判断类型，做后pushNumber、pushString等等。听说jar包那边的是用lua的userdata之类的东西，我并没有研究了，因为当时开发需求赶，并且我对lua并没有太多兴趣…
+虽然我没有userdata，但是最近一次测试，我们传了1外3M的数据文件进去处理，我们只用了0.1s，而安卓的第三方库用了10s…
+我唯一担心的是，内存这块的东西，因为确实对C和lua并不熟悉</li>
+</ol>
+
+<p>代码参考</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (void)pushObject:(id)object state:(lua_State *)state{
+    unsigned int outCount = (unsigned int)[object count];
+    
+    if ([object isKindOfClass:[NSDictionary class]]) {
+        lua_createtable(state, outCount, 0);
+        for (NSString* key in object) {
+            id value = object[key];
+            
+            lua_pushstring(state, [key cStringUsingEncoding: NSUTF8StringEncoding]);
+            if ([value isKindOfClass: [NSString class]]) {
+                lua_pushstring(state, [value cStringUsingEncoding: NSUTF8StringEncoding]);
+            } else if([value isKindOfClass: [NSNumber class]]) {
+                lua_pushnumber(state, [value doubleValue]);
+            } else {
+                [self pushObject:value state:state];
+            }
+            
+            lua_rawset(state, -3);
+        }
+    } else {
+        lua_createtable(state, outCount, 0);
+        for (int i = 0; i &lt; outCount; i++) {
+            lua_pushinteger(state, i + 1);
+            
+            id element = object[i];
+            if ([element isKindOfClass: [NSString class]]) {
+                lua_pushstring(state, [element cStringUsingEncoding: NSUTF8StringEncoding]);
+            } else if([element isKindOfClass: [NSNumber class]]) {
+                lua_pushnumber(state, [element doubleValue]);
+            } else {
+                [self pushObject:element state:state];
+            }
+            
+            lua_settable(state, -3);
+        }
+    }
+}
+</code></pre></div></div>
+<ol>
+  <li>从lua拿NSArray或者NSDictionarys
+与第4条一样，没有现成的lua_toXXXX可用。</li>
+</ol>
+
+<p>参考代码</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (id)readLuaTable:(lua_State *)state{
+    int index = lua_gettop(state);
+    lua_pushnil(state);
+    
+    id info = nil;
+    while(lua_next(state, index) != 0)
+    {
+        if (info == nil) {
+            if (lua_type(state, -2) == LUA_TNUMBER) {
+                info = [NSMutableArray array];
+            }else {
+                info = [NSMutableDictionary dictionary];
+            }
+        }
+        
+        if(lua_isnumber(state, -1)){
+            double value = lua_tonumber(state, -1);
+            if ([info isKindOfClass: [NSMutableDictionary class]]) {
+                [info setObject: @(value)
+                         forKey: [NSString stringWithUTF8String: lua_tostring(state, -2)]];
+            }else if ([info isKindOfClass: [NSMutableArray class]]) {
+                [info addObject: @(value)];
+            }
+        }
+        else if(lua_isstring(state, -1)){
+            const char* value = lua_tostring(state, -1);
+            if ([info isKindOfClass: [NSMutableDictionary class]]) {
+                [info setObject: [NSString stringWithUTF8String: value]
+                         forKey: [NSString stringWithUTF8String: lua_tostring(state, -2)]];
+            }else if ([info isKindOfClass: [NSMutableArray class]]) {
+                [info addObject: [NSString stringWithUTF8String: value]];
+            }
+        }
+        else if(lua_isboolean(state, -1)){
+            BOOL value = lua_toboolean(state, -1);
+            if ([info isKindOfClass: [NSMutableDictionary class]]) {
+                [info setObject: @(value)
+                         forKey: [NSString stringWithUTF8String: lua_tostring(state, -2)]];
+            }else if ([info isKindOfClass: [NSMutableArray class]]) {
+                [info addObject: @(value)];
+            }
+        }
+        else if(lua_istable(state, -1)){
+            id value = [self readLuaTable: state];
+            if (value != nil &amp;&amp; [info isKindOfClass: [NSMutableDictionary class]]) {
+                [info setObject: value
+                         forKey: [NSString stringWithUTF8String: lua_tostring(state, -2)]];
+            }else if (value != nil &amp;&amp; [info isKindOfClass: [NSMutableArray class]]) {
+                [info addObject: value];
+            }
+        }else {
+            NSLog(@"未识别lua的类型");
+        }
+        
+        lua_pop(state, 1);
+    }
+    return info;
+}
+</code></pre></div></div>
+<h2 id="参考">参考</h2>
+
+<p><a href="http://blog.stokedsoftware.com/blog/2012/02/04/scripting-ios-games-with-lua/">http://blog.stokedsoftware.com/blog/2012/02/04/scripting-ios-games-with-lua/</a></p>
+
+
+      <footer class="site-footer">
+        <span class="site-footer-credits">This page was generated by <a href="/">Feierbn</a> with <a href="https://jekyllrb.com/">Jekyll</a> using <a href="https://github.com/pages-themes/cayman">Cayman theme</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>
