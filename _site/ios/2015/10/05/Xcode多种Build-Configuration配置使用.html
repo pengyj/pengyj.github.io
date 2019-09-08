@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+
+    
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Xcode多种Build Configuration配置使用 | Feierbn</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Xcode多种Build Configuration配置使用" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="测试环境 OS X Yosemite 10.10.5" />
+<meta property="og:description" content="测试环境 OS X Yosemite 10.10.5" />
+<link rel="canonical" href="http://localhost:4000/ios/2015/10/05/Xcode%E5%A4%9A%E7%A7%8DBuild-Configuration%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8.html" />
+<meta property="og:url" content="http://localhost:4000/ios/2015/10/05/Xcode%E5%A4%9A%E7%A7%8DBuild-Configuration%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8.html" />
+<meta property="og:site_name" content="Feierbn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2015-10-05T00:00:00+08:00" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/ios/2015/10/05/Xcode%E5%A4%9A%E7%A7%8DBuild-Configuration%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8.html","headline":"Xcode多种Build Configuration配置使用","dateModified":"2015-10-05T00:00:00+08:00","datePublished":"2015-10-05T00:00:00+08:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/ios/2015/10/05/Xcode%E5%A4%9A%E7%A7%8DBuild-Configuration%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8.html"},"description":"测试环境 OS X Yosemite 10.10.5","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+  </head>
+  <body>
+  	<a class="back-to-home" href="/"><< Home</a>
+  
+    <header class="page-header2" role="banner">
+      <h1 class="project-name">Xcode多种Build Configuration配置使用</h1>
+      <h2 class="project-tagline">看过我的文，我们就是朋友了~「无中生友警告❗️」</h2>
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h2 id="测试环境">测试环境</h2>
+<p>OS X Yosemite 10.10.5</p>
+
+<p>Xcode 7.0.1</p>
+
+<h2 id="build-configuration">Build Configuration?</h2>
+<p>Xcode默认会有2个编译模式，一个是Debug，一个是Release。Release下不能调试程序，编译时有做编译优化，会比用Debug打包出来的运行快，另外包也会更小。</p>
+
+<p><img src="/_img/20151005/pic1.png" alt="pic1.png" /></p>
+
+<h2 id="使用场景">使用场景</h2>
+<p>我自己碰到的使用场景是，我司的域名有3套：</p>
+
+<ol>
+  <li>针对开发时的域名</li>
+  <li>针对预上线时的域名</li>
+  <li>针对上线时对外公开的域名</li>
+</ol>
+
+<p>这个时候，就会有多套域名，全部加起来可能有15个左右。每次打包时，就会特别混乱。（注释掉现在使用的域名，打开原本注释掉的那部分，出差错的可能蛮高的，而且不利于阅读）</p>
+
+<p>这个时候，我们就使用它来针对3个环境下不同域名做配置。</p>
+
+<h2 id="配置build-configuration">配置Build Configuration</h2>
+<h3 id="1-添加configuration">1. 添加Configuration</h3>
+
+<p>这里我们添加DEVELOP、BETA、保留原有的(release)。这里我们选择直接duplicatte Debug的配置，因为Release的不能做断点调试。</p>
+
+<p><img src="/_img/20151005/pic2.png" alt="pic2.png" /></p>
+
+<h3 id="2-查看configuration">2. 查看Configuration</h3>
+
+<p>添加完第1步的Configuration之后，在Edit Scheme里就会看到新添加的配置项</p>
+
+<p><img src="/_img/20151005/pic3.png" alt="pic3.png" /></p>
+
+<h3 id="3-更改preprocessor-macros">3. 更改Preprocessor Macros</h3>
+
+<p>第1步里我们直接复制了Debug的配置项，那这里的值就会有问题，需要自己设置。</p>
+
+<p><img src="/_img/20151005/pic4.png" alt="pic4.png" /></p>
+
+<h3 id="4-在程序里配置对应的configuration下不同域名">4. 在程序里配置对应的Configuration下不同域名</h3>
+
+<p><img src="/_img/20151005/pic5.png" alt="pic5.png" /></p>
+
+<h3 id="5-测试">5. 测试</h3>
+
+<p>运行程序，修改Scheme下不同的Configuration，就能得到不同的值，那结果就是正确的了。</p>
+
+<hr />
+<p>基于以上的实验，app还可以在不同环境下配置不同的AppIcon和AppName</p>
+
+<h2 id="appicon">AppIcon</h2>
+<p>使用Asset Catalog，分别给三种环境下配置3个名字</p>
+
+<ul>
+  <li>AppIcon</li>
+  <li>AppIconDEVELOP</li>
+  <li>AppIconBETA</li>
+</ul>
+
+<p>然后去Target - Build Settings里搜索Asset Catalog App Icon Set Name这一项</p>
+
+<p><img src="/_img/20151005/pic6.png" alt="pic6.png" /></p>
+
+<p><img src="/_img/20151005/pic7.png" alt="pic7.png" /></p>
+
+<h2 id="app-name">App Name</h2>
+<p>Target - Build Settings里点+号，添加一个User-Defined Setting</p>
+
+<p>比如我们请一个叫APP_DISPLAY_NAME的key值，下面BETA叫BETA，DEVELOP叫DEVELOP， Release还是用系统原配置。</p>
+
+<p>进到Target - Info里，修改Bundle name为$(APP_DISPLAY_NAME)</p>
+
+<p><img src="/_img/20151005/pic8.png" alt="pic8.png" /></p>
+
+<p><img src="/_img/20151005/pic9.png" alt="pic9.png" /></p>
+
+<p><img src="/_img/20151005/pic10.png" alt="pic10.png" /></p>
+
+<h2 id="运行结果">运行结果</h2>
+<p><img src="/_img/20151005/iconDev.png" alt="iconDev.png" /></p>
+
+<p><img src="/_img/20151005/iconBeta.png" alt="iconBeta.png" /></p>
+
+<p><img src="/_img/20151005/iconRelease.png" alt="iconRelease.png" /></p>
+
+<h2 id="打包配置">打包配置</h2>
+<p>这几天我们做了一件很蠢的事，把开发用的环境打包发给了Apple。
+为了弥补这件事，顺便规范以后的打包问题，于是做了一些配置上的补救。
+查了下Apple的文档，原来可以配置，我将Release环境以外的Skip Install配置成NO，就不会Archive出ipa了。</p>
+
+<p><img src="/_img/20151005/TN2215_SkipInstall.png" alt="TN2215_SkipInstall.png" /></p>
+
+<h2 id="参考">参考</h2>
+<p>http://nickcheng.com/post/unique-icons-for-your-app-in-different-state-in-xcode5-debug-release</p>
+
+<p>https://developer.apple.com/library/ios/technotes/tn2215/_index.html</p>
+
+
+      <footer class="site-footer">
+        <span class="site-footer-credits">This page was generated by <a href="/">Feierbn</a> with <a href="https://jekyllrb.com/">Jekyll</a> using <a href="https://github.com/pages-themes/cayman">Cayman theme</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>

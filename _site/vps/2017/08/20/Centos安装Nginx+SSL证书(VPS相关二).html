@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+
+    
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Centos安装Nginx+SSL证书(VPS相关二) | Feierbn</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Centos安装Nginx+SSL证书(VPS相关二)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="环境 Mac OSX 操作 搬瓦工VPS Centos 6 x86_64 bbr Python2.6（centos 6默认自带）" />
+<meta property="og:description" content="环境 Mac OSX 操作 搬瓦工VPS Centos 6 x86_64 bbr Python2.6（centos 6默认自带）" />
+<link rel="canonical" href="http://localhost:4000/vps/2017/08/20/Centos%E5%AE%89%E8%A3%85Nginx+SSL%E8%AF%81%E4%B9%A6(VPS%E7%9B%B8%E5%85%B3%E4%BA%8C).html" />
+<meta property="og:url" content="http://localhost:4000/vps/2017/08/20/Centos%E5%AE%89%E8%A3%85Nginx+SSL%E8%AF%81%E4%B9%A6(VPS%E7%9B%B8%E5%85%B3%E4%BA%8C).html" />
+<meta property="og:site_name" content="Feierbn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-08-20T00:00:00+08:00" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/vps/2017/08/20/Centos%E5%AE%89%E8%A3%85Nginx+SSL%E8%AF%81%E4%B9%A6(VPS%E7%9B%B8%E5%85%B3%E4%BA%8C).html","headline":"Centos安装Nginx+SSL证书(VPS相关二)","dateModified":"2017-08-20T00:00:00+08:00","datePublished":"2017-08-20T00:00:00+08:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/vps/2017/08/20/Centos%E5%AE%89%E8%A3%85Nginx+SSL%E8%AF%81%E4%B9%A6(VPS%E7%9B%B8%E5%85%B3%E4%BA%8C).html"},"description":"环境 Mac OSX 操作 搬瓦工VPS Centos 6 x86_64 bbr Python2.6（centos 6默认自带）","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+  </head>
+  <body>
+  	<a class="back-to-home" href="/"><< Home</a>
+  
+    <header class="page-header2" role="banner">
+      <h1 class="project-name">Centos安装Nginx+SSL证书(VPS相关二)</h1>
+      <h2 class="project-tagline">看过我的文，我们就是朋友了~「无中生友警告❗️」</h2>
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h2 id="环境">环境</h2>
+<ul>
+  <li>Mac OSX 操作</li>
+  <li>搬瓦工VPS Centos 6 x86_64 bbr</li>
+  <li>Python2.6（centos 6默认自带）</li>
+</ul>
+
+<h2 id="目标">目标</h2>
+<ul>
+  <li>安装Nginx</li>
+  <li>SSL证书(LetsEncrypt)</li>
+</ul>
+
+<h2 id="安装nginx">安装Nginx</h2>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vi /etc/yum.repos.d/nginx.repo
+</code></pre></div></div>
+
+<p>写入</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[nginx]
+name=nginx repo
+baseurl=http://nginx.org/packages/centos/$releasever/$basearch/
+gpgcheck=0
+enabled=1
+</code></pre></div></div>
+
+<p>保存后：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum install nginx -y
+sudo chkconfig nginx on ##设置nginx为开机启动
+sudo service nginx start ##开启nginx
+</code></pre></div></div>
+
+<p>打开ip测试，就会看到“Welcome to Nginx!”的经典界面了。</p>
+
+<h2 id="编辑nginx配置文件">编辑Nginx配置文件</h2>
+<p>找到nginx主目录，命令是<code class="highlighter-rouge">nginx -t</code>,就会看到相关路径</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+</code></pre></div></div>
+
+<p>编辑默认配置文件, 80端口就是http的默认端口，更改root目录可以修改website的目录指向。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vi /etc/nginx/conf.d/default.conf
+</code></pre></div></div>
+
+<h2 id="lets-encrypt">Let’s Encrypt</h2>
+
+<ul>
+  <li>安装wget</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>yum -y install wget
+</code></pre></div></div>
+
+<ul>
+  <li>安装easy_install和pip
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget https://bootstrap.pypa.io/ez_setup.py -O - | python
+easy_install pip
+</code></pre></div>    </div>
+  </li>
+  <li>下载certbot-auto</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget https://dl.eff.org/certbot-auto
+</code></pre></div></div>
+
+<ul>
+  <li>修改certbot-auto操作权限</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>chmod a+x certbot-auto
+</code></pre></div></div>
+
+<ul>
+  <li>安装virtualenv(否则下一步有可能出错)</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip install virtualenv
+</code></pre></div></div>
+
+<ul>
+  <li>安装certbot-auto</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./certbot-auto
+</code></pre></div></div>
+
+<p>python2.6的环境会有一堆报错提示，可以忽略，或者自行解决升级到python2.7。</p>
+
+<ul>
+  <li>认证域名，然后开始填邮箱、同意服务协议、是否接收相关服务邮件等。</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>certbot certonly --webroot -w /website主目录/ -d 域名
+</code></pre></div></div>
+
+<ul>
+  <li>成功提示</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>IMPORTANT NOTES:
+ - Congratulations! Your certificate and chain have been saved at:
+   /etc/letsencrypt/live/你填写的域名/fullchain.pem
+   Your key file has been saved at:
+   /etc/letsencrypt/live/你填写的域名/privkey.pem
+   Your cert will expire on 2017-11-17. To obtain a new or tweaked
+   version of this certificate in the future, simply run certbot-auto
+   again. To non-interactively renew *all* of your certificates, run
+   "certbot-auto renew"
+ - Your account credentials have been saved in your Certbot
+   configuration directory at /etc/letsencrypt. You should make a
+   secure backup of this folder now. This configuration directory will
+   also contain certificates and private keys obtained by Certbot so
+   making regular backups of this folder is ideal.
+ - If you like Certbot, please consider supporting our work by:
+
+   Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+   Donating to EFF:                    https://eff.org/donate-le
+
+</code></pre></div></div>
+
+<ul>
+  <li>自动更新证书</li>
+</ul>
+
+<p>因为Let’s encrypt只有90天有效期。具体操作可以看官方文档。<a href="https://certbot.eff.org">https://certbot.eff.org</a></p>
+
+<ul>
+  <li>更新子域名证书
+最近尝试加了一个子域名，对子域名也加SSL证书。
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./certbot-bot certonly --cert-name 原域名 --expand -d 原域名 -d 子域名
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h2 id="参考">参考</h2>
+<p><a href="https://certbot.eff.org/#centos6-nginx">certbot</a></p>
+
+<p><a href="http://www.vpsss.net/1304.html">Let’s Encrypt官方推荐Certbot工具快速部署SSL证书</a></p>
+
+
+      <footer class="site-footer">
+        <span class="site-footer-credits">This page was generated by <a href="/">Feierbn</a> with <a href="https://jekyllrb.com/">Jekyll</a> using <a href="https://github.com/pages-themes/cayman">Cayman theme</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>

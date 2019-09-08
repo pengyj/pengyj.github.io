@@ -7,3 +7,5 @@ google_analytics:
 theme: jekyll-theme-cayman
 paginate: 15
 paginate_path: "page:num"
+include:
+  - "_img"
