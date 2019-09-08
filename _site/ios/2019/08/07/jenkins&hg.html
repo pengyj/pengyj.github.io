@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+
+    
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Mac 下使用 Jenkins 和 hg 代码库 | Feierbn</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Mac 下使用 Jenkins 和 hg 代码库" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="大家都用 git，hg 相关资料较少" />
+<meta property="og:description" content="大家都用 git，hg 相关资料较少" />
+<link rel="canonical" href="http://localhost:4000/ios/2019/08/07/jenkins&hg.html" />
+<meta property="og:url" content="http://localhost:4000/ios/2019/08/07/jenkins&hg.html" />
+<meta property="og:site_name" content="Feierbn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-08-07T00:00:00+08:00" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/ios/2019/08/07/jenkins&hg.html","headline":"Mac 下使用 Jenkins 和 hg 代码库","dateModified":"2019-08-07T00:00:00+08:00","datePublished":"2019-08-07T00:00:00+08:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/ios/2019/08/07/jenkins&hg.html"},"description":"大家都用 git，hg 相关资料较少","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+  </head>
+  <body>
+  	<a class="back-to-home" href="/"><< Home</a>
+  
+    <header class="page-header2" role="banner">
+      <h1 class="project-name">Mac 下使用 Jenkins 和 hg 代码库</h1>
+      <h2 class="project-tagline">大家都用 git，hg 相关资料较少</h2>
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <p>由于公司的代码库并不是使用 git 而是使用 Mercurial，网上常用的 jenkins 和 hg 配置的东西比较少，于是有了此篇分享。</p>
+
+<p>我们的目标是能使用 Jenkins 拉取 hg 上的代码，并能根据 Xcode build configuration 里的配置来拉取各自环境的代码构建<a href="/ios/2015/10/05/Xcode&amp;Configuration.html">Xcode多种Build Configuration配置使用</a>，最后由 nginx 反向代理到端口由外网访问。</p>
+
+<h3 id="jenkins是什么">Jenkins是什么</h3>
+
+<p>我理解的，简单来说它就是一个 web 服务，提供执行脚本的能力。
+是基于 Java 语言开发的 web 服务。
+拥有完善的 web 服务：登录注册、权限管理、插件扩展、系统日志各种功能。</p>
+
+<p>我们在 iOS 下，所有的 pod、fastlane、代码版本库管理、打包其实都是可以由脚本来完成。Jenkins 提供了一个这样的 web 容器，能整合执行这些零散的需要人为操作的动作改由脚本触发执行。</p>
+
+<h3 id="工具和环境">工具和环境</h3>
+
+<p>homebrew</p>
+
+<p>brew-cast</p>
+
+<p>java</p>
+
+<p>Jenkins</p>
+
+<p>hg</p>
+
+<p>nginx</p>
+
+<h3 id="安装-homebrew-和-brew-cast">安装 homebrew 和 brew-cast</h3>
+
+<p>使用 homebrew 来安装 jenkins 的原因是方便管理
+brew services 可以自己管理它的开关机启动项等，而且后面涉及到一个重要的环境变量问题。
+当然，还有一个安装途径是 pkg 安装包</p>
+
+<p>由于 jenkins 是基于 java 来运行的，所以需要安装 java 环境，我们这里选择用brew-cast 来安装。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>安装brew-cast
+brew install brew-cask-completion
+brew-cast java
+
+安装jenkins
+brew install jenkins
+</code></pre></div></div>
+<p>开启 jenkins 运行有2种方式，一是使用 brew 的<code class="highlighter-rouge">brew services start jenkins</code>，或者直接命令行前台运行<code class="highlighter-rouge">jenkins</code>做调试使用。</p>
+
+<p>关闭使用<code class="highlighter-rouge">brew services stop jenkins</code></p>
+
+<h3 id="安装-jenkins">安装 Jenkins</h3>
+
+<p>详细步骤请自行搜索。</p>
+
+<p>第一次进入，会要求输入一个<code class="highlighter-rouge">initialAdminPassword</code>，如果你是使用前台运行的方式，命令行能直接看到，如果不是，按照页面提示找到路径下的码复制。</p>
+
+<p>输入完之后按推荐步骤安装插件。</p>
+
+<p>进行后就可以创建第一个登录用户了。</p>
+
+<h3 id="安装插件">安装插件</h3>
+
+<p><code class="highlighter-rouge">Mercurial</code>这是使用 hg 必须安装的</p>
+
+<p><code class="highlighter-rouge">Extended Choice Parameter Plug-In</code>用来配置 Xcode Build Configuration 对应的选项</p>
+
+<p><code class="highlighter-rouge">Role-based Authorization Strategy</code>用来管理注册用户的权限</p>
+
+<h3 id="jenkins-环境变量">Jenkins 环境变量</h3>
+
+<p>一般安装 PATH 目录是/usr/bin:/bin:/usr/sbin:/sbin这个，但 hg 却是在/usr/local/bin下，始终无法运行起来。</p>
+
+<p>找到<code class="highlighter-rouge">/usr/local/opt/jenkins</code>目录下的homebrew.mxcl.jenkins.plist的文件。这个是 brew 管理的启动项 plist，我们在原基础上增加了几项，就变成下面这样。</p>
+
+<p>EnvironmentVariables 我们增加了 PATH 路径，把我们想要的路径写到上面，LANG是语言。
+httpPort 默认是8080，我们改为6666（可以不改，仅为测试）。
+–prefix=/jenkins 可以先不配置，如果你没有使用到nginx，或者其它服务器代码，请不要加。这里是为了后面和 nginx 配置使用，因为nginx我们的 Location /目录已经有其它配置，只能放在二级目录。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;plist version="1.0"&gt;
+  &lt;dict&gt;
+    &lt;key&gt;Label&lt;/key&gt;
+    &lt;string&gt;homebrew.mxcl.jenkins&lt;/string&gt;
+    &lt;key&gt;ProgramArguments&lt;/key&gt;
+    &lt;array&gt;
+      &lt;string&gt;/usr/libexec/java_home&lt;/string&gt;
+      &lt;string&gt;-v&lt;/string&gt;
+      &lt;string&gt;1.8&lt;/string&gt;
+      &lt;string&gt;--exec&lt;/string&gt;
+      &lt;string&gt;java&lt;/string&gt;
+      &lt;string&gt;-Dmail.smtp.starttls.enable=true&lt;/string&gt;
+      &lt;string&gt;-jar&lt;/string&gt;
+      &lt;string&gt;/usr/local/opt/jenkins/libexec/jenkins.war&lt;/string&gt;
+      &lt;string&gt;--httpListenAddress=127.0.0.1&lt;/string&gt;
+      &lt;string&gt;--httpPort=6666&lt;/string&gt;
+      &lt;string&gt;--prefix=/jenkins&lt;/string&gt;
+    &lt;/array&gt;
+    &lt;key&gt;RunAtLoad&lt;/key&gt;
+    &lt;true/&gt;
+    &lt;key&gt;EnvironmentVariables&lt;/key&gt;
+    &lt;dict&gt;
+        &lt;key&gt;PATH&lt;/key&gt;
+        &lt;string&gt;/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin&lt;/string&gt;
+        &lt;key&gt;LANG&lt;/key&gt;
+        &lt;string&gt;zh_CN.UTF-8&lt;/string&gt;
+    &lt;/dict&gt;
+  &lt;/dict&gt;
+&lt;/plist&gt;
+</code></pre></div></div>
+
+<h3 id="job-关键配置">Job 关键配置</h3>
+
+<p>这里配置对应 Xcode build configuration里的配置，比如我这里配置了3个环境。</p>
+
+<p><img src="/_img/20190807/xcode_build_configuration.png" alt="xcode_build_configuration" /></p>
+
+<p><img src="/_img/20190807/parameter_choice.png" alt="parameter_choice" /></p>
+
+<p>源码管理选择Mercurial，</p>
+
+<p>Repository URL：版本库地址</p>
+
+<p>Credentials：版本库的用户名密码，自己新建，可以在凭据那里统一管理。</p>
+
+<p>Revision: Branch下填分支名</p>
+
+<p><img src="/_img/20190807/mercurial.png" alt="mercurial" /></p>
+
+<p>构建脚本</p>
+
+<p>将 ipa 包放到程序根目录的 path/to/xxx.ipa 下，后续可以自己上传、删除等。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd DistDemo
+
+time=$(date "+%m%d_%H%M")
+output="path/to"
+IPANAME="demo${time}_jenkins.ipa"
+fastlane archive name:$IPANAME env:$app_Evn path:$output
+</code></pre></div></div>
+
+<h3 id="邮件配置">邮件配置</h3>
+<p>默认的模板肯定不符合大家所要。</p>
+
+<p>网上有很多blog介绍。比如官方有一个邮件模板，可以试下
+<a href="https://github.com/jenkinsci/email-ext-plugin/blob/master/src/main/resources/hudson/plugins/emailext/templates/groovy-html.template">groovy-html.template</a></p>
+
+<p>在jenkins的根目录，一般为<code class="highlighter-rouge">~/.jenkins</code>下，新建一个<code class="highlighter-rouge">email-templates</code>目录，将上面的模板放入。</p>
+
+<p>Jenkins 系统配置 - Extended E-mail Notification - Default Content 更改为下面，构建完就会发这个模板邮件了。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>${SCRIPT, template="groovy.template"}
+</code></pre></div></div>
+
+<p>当然，如果你的 Job 配置了构建后操作的Editable Email Notification，你也可以在 Job 的配置项右侧，做模板测试。它可以将历史的构建内容填充到模板供观看。</p>
+
+<p><img src="/_img/20190807/email_template_testing.png" alt="email_template_testing" /></p>
+
+<p><img src="/_img/20190807/failure.png" alt="failure" /></p>
+
+<h3 id="带配置环境选择的打包">带配置环境选择的打包</h3>
+
+<p>当你配置了 Extended parameter choices 之后，点击开始构建，就会跳到下图这样的页面，选择构建环境，再开始打包。</p>
+
+<p><img src="/_img/20190807/打包.png" alt="打包" /></p>
+
+<h3 id="nginx反向代理">nginx反向代理</h3>
+
+<p>完成上面的这些，我们的 Jenkins 还都是通过 http://127.0.0.1:6666 来访问的，现在我有一个已经在运行的 nginx ，想要将它和 Jenkins 搭配起来，通过域名能让其它连网设备访问到本机 Jenkins。</p>
+
+<p>中途我碰到 Jenkins 显示反向代码配置有误的问题。最后找到 <code class="highlighter-rouge">X-Forwarded-Proto </code>这一条很重要。
+因为我的 nginx 是已经支持 https 的，中间由 https 转发回 http，scheme变了。</p>
+
+<p>jenkins的系统配置里，Jenkins URL 写为你 nginx 下jenkins 的地址，比如 nginx 的配置域名是 <a href="https://example.com">https://example.com</a>，那 jenkins url 就是 <a href="https://example.com/jenkins">https://example.com/jenkins</a></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>location /jenkins {
+	proxy_pass     http://127.0.0.1:6666;
+	proxy_redirect  http:// https://;
+	proxy_set_header Host $host;
+	proxy_set_header X-Real-IP $remote_addr;
+	proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	proxy_set_header X-Forwarded-Proto $scheme;
+}
+</code></pre></div></div>
+
+
+      <footer class="site-footer">
+        <span class="site-footer-credits">This page was generated by <a href="/">Feierbn</a> with <a href="https://jekyllrb.com/">Jekyll</a> using <a href="https://github.com/pages-themes/cayman">Cayman theme</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>

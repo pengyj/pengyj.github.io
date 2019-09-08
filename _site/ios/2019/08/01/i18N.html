@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+
+    
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>iOS 国际化 和 多语言 | Feierbn</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="iOS 国际化 和 多语言" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="多语言仅仅只是国际化一个小方面" />
+<meta property="og:description" content="多语言仅仅只是国际化一个小方面" />
+<link rel="canonical" href="http://localhost:4000/ios/2019/08/01/i18N.html" />
+<meta property="og:url" content="http://localhost:4000/ios/2019/08/01/i18N.html" />
+<meta property="og:site_name" content="Feierbn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-08-01T00:00:00+08:00" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/ios/2019/08/01/i18N.html","headline":"iOS 国际化 和 多语言","dateModified":"2019-08-01T00:00:00+08:00","datePublished":"2019-08-01T00:00:00+08:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/ios/2019/08/01/i18N.html"},"description":"多语言仅仅只是国际化一个小方面","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+  </head>
+  <body>
+  	<a class="back-to-home" href="/"><< Home</a>
+  
+    <header class="page-header2" role="banner">
+      <h1 class="project-name">iOS 国际化 和 多语言</h1>
+      <h2 class="project-tagline">多语言仅仅只是国际化一个小方面</h2>
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <p>最近公司的项目要求适配国际化，在过程中遇到挺多有意思的知识点。</p>
+
+<p>多语言大家都知道，字母文字有显著的形状差别。</p>
+
+<p>但国际化并不仅仅只包含多语言，它还有不同语言的表达方式和使用习惯的差异。</p>
+
+<p>一般大家把多语言叫做Multilingualization，即M17N。
+国际化叫做Internationalization，即i18n。</p>
+
+<h2 id="测试环境">测试环境</h2>
+
+<p>Xcode: 10.1</p>
+
+<h2 id="语言的特性和差异">语言的特性和差异</h2>
+
+<p>学过英语的，应该都知道中文和英文在文字、语法、特定表达有很大区别。</p>
+
+<p>对于我们不了解的其它语种，也存在许多差异化的地方。</p>
+
+<h4 id="一语序语义和语法">一、语序、语义和语法</h4>
+
+<p>拿英文来说，同一个单词可以有2种表达意思。</p>
+
+<p>对于当「天」使用的情况，「5 day」和「5天」的表达习惯是一致的。</p>
+
+<p>但如果是当「第X天」使用的情况，「Day 5」和「天5」就无法匹配了。</p>
+
+<p>所以这里需要考虑用2个 key。英文写成「Day %ld」和 中文写成「第%ld天」。</p>
+
+<h4 id="二大小写">二、大小写</h4>
+
+<p>对于英文，同一个英文单词会有小写、首字母大写、全大写的显示要求。</p>
+
+<p>不需要使用多个key，否则你的语言包不仅大，而且管理有会变混乱。</p>
+
+<p>应该考虑统一使用小写，使用系统提供的 String 库的功能来处理。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[@"test" capitalizedString];
+[@"test" uppercaseString];
+</code></pre></div></div>
+
+<h4 id="三单复数">三、单复数</h4>
+
+<p>中文使用者没有这种困扰。但英文使用者有1和其它有单复数差别，其它国家可能单复数有1、2、10的倍数等表达差别。</p>
+
+<p>被总结出来即：zero、one、two、few、many、other，详情看文章末尾的 Language Plural Rules 参考文档。</p>
+
+<h4 id="四数字">四、数字</h4>
+
+<p>分隔位的不同，标点字符使用的不同，都是数字表达的差异性。例如：</p>
+
+<p>中文：1000.01</p>
+
+<p>英文：1,000.01</p>
+
+<p>德语： 1.000,01</p>
+
+<p>印地语：१,०००.०१</p>
+
+<h4 id="五日期">五、日期</h4>
+
+<p>日期年月日表达顺序和分隔符，也是一种常见的差异点。例如：</p>
+
+<p>中文：2019年1月1日</p>
+
+<p>英文：January 1, 2019</p>
+
+<p>印地语：१ जनवरी २०१९</p>
+
+<h4 id="六日历">六、日历</h4>
+
+<p>iOS 系统提供了3种日历。如果 app 内有需要处理日历相关的需求，那么这里需要做一些适配工作。</p>
+
+<p>对于中文使用者：</p>
+
+<p>公历：2019年1月1日</p>
+
+<p>日本语：平成31年1月1日</p>
+
+<p>佛历：佛历2562年1月1日</p>
+
+<p><img src="/_img/20190801/calendar.png" alt="calendar.png" /></p>
+
+<h4 id="七rtl">七、RTL</h4>
+
+<p>对于如阿拉伯语，它的阅读方向和大部分国家相反。</p>
+
+<p>我们是 Left-to-Right（从左到右），它们是 Right-to-Left（从右到左），常说的 RTL 适配就是说的这种语言。</p>
+
+<p>做过布局的大家都知道 Masonry 的 left 和 leading、right 和 trailing，区别就在这种语言国家得到体现。对于中国，leading 和 trailing 完全等同于 left 和 right，但对于阿拉伯语的使用者来说，leading = right、trailing = left。类似 UICollectionView 的布局，也与我们想象的不同。</p>
+
+<p>中文使用者9宫格顺序</p>
+
+<p>1 2 3</p>
+
+<p>4 5 6</p>
+
+<p>7 8 9</p>
+
+<p>阿拉伯语使用者9宫格顺序</p>
+
+<p>3 2 1</p>
+
+<p>6 5 4</p>
+
+<p>9 8 7</p>
+
+<h4 id="八排序">八、排序</h4>
+<p>不同国家的排序规则也是不同的，重音符号、某些符号的出现都会加大排序权重。</p>
+
+<p>你将你的手机切换在日文，打开通讯录即能看到明显的区别。</p>
+
+<h4 id="九键盘">九、键盘</h4>
+
+<p>不同语言的键盘的不同，可能会导致你的正则匹配失效等。</p>
+
+<p>键盘上的字符并不是固定每个语言都出现，有些语种可能会缺失你常用的语言下的输入按键。</p>
+
+<p><img src="/_img/20190801/keyboard.png" alt="键盘" /></p>
+
+<h4 id="十度量衡">十、度量衡</h4>
+
+<p>千克和磅、摄氏度和华氏度，这些单位的互转可能会导致精度缺失。这也是实际用到需要考虑的问题。</p>
+
+<h2 id="国际化实践简略不详细">国际化实践（简略，不详细）</h2>
+
+<p>一般步骤是：</p>
+
+<ol>
+  <li>
+    <p>选定项目需要支持的语种</p>
+  </li>
+  <li>
+    <p>增加语言映射表 Strings File。</p>
+  </li>
+  <li>
+    <p>代码中调用</p>
+  </li>
+</ol>
+
+<h4 id="一管理项目语种">一、管理项目语种</h4>
+
+<p>Target - PROJECT - Localizations 就是管理我们程序支持语种的地方。</p>
+
+<p><img src="/_img/20190801/language.png" alt="language.png" /></p>
+
+<h4 id="二填写语言映射文件">二、填写语言映射文件</h4>
+
+<p>建立新建一个名叫 <code class="highlighter-rouge">Localizable.strings</code> 的 Strings 文件</p>
+
+<p>后期每在 Localizations 增加的语言，都可以在文件右边 inspector 勾选语言适配。</p>
+
+<p>文件里的内容可以为任意格式，左边为key，右边为显示的文字，用分号结尾</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"lg_days" = "%ld days";
+"key.test" = "i'm value";
+"😂" = "cry";
+</code></pre></div></div>
+
+<p><img src="/_img/20190801/inspector.png" alt="inspector.png" /></p>
+
+<h4 id="三用法">三、用法</h4>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>无格式化的
+NSString *str = NSLocalizedString(@"key.test", @"我是注释");
+// print i'm value
+
+带格式化的
+NSString *str2 = [NSString localizedStringWithFormat:NSLocalizedString(@"lg_days", nil), 1];
+// print 1 day
+</code></pre></div></div>
+
+<h4 id="四infopliststrings">四、InfoPlist.strings</h4>
+
+<p>我们的项目并没有使用到这个。</p>
+
+<p>它可以定义替换掉项目 info.plist 相关的一些内容。比如 app icon、app name 等。但要求是，名字必须是 <code class="highlighter-rouge">InfoPlist.strings</code></p>
+
+<p>但它有个限制，它是跟随系统语言，即你代码修改程序语言<code class="highlighter-rouge">AppleLanguages</code>并不起作用。</p>
+
+<p>注意，即使你在 InfoPlist.strings 填了相应的权限文案，info.plist 里还是需要填一次，否则会法上传 ipa 包。</p>
+
+<h4 id="五用代码修改-app-语言">五、用代码修改 app 语言</h4>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+[userDefaults setValue:@[@"en"] forKey:@"AppleLanguages"];
+[userDefaults synchronize];
+</code></pre></div></div>
+
+<p>value的值与你建的语言文件夹名一致。即 .lproj 前的名称。</p>
+
+<p><img src="/_img/20190801/name.png" alt="name.png" /></p>
+
+<p>这样就可以修改 app 内语言了。但是它只能在下一次启动时生效，所以我们需要 hook 代码，修改它。详情请见<a href="https://juejin.im/post/5c130156e51d451d9a74887b">掘金 - iOS开发之APP内部切换语言</a></p>
+
+<h4 id="六storyboard-和-xib-国际化">六、storyboard 和 xib 国际化</h4>
+
+<p>apple 支持做国际化，很容易，请自行找文档和blog。</p>
+
+<p>但是 Launch Screen.storyboard 启动屏即是不支持的。官方文档(Human Interface Guidelines - Launch Screen)里说</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Avoid including text on your launch screen. Because launch screens are static, any displayed text won’t be localized.
+</code></pre></div></div>
+
+<p><img src="/_img/20190801/launchScreen.png" alt="launchScreen.png" /></p>
+
+<p>如果一定要做：</p>
+
+<p>plan B 就是用 <code class="highlighter-rouge">InfoPlist.strings</code>，缺点也如刚刚描述一样，只能跟随系统语言。</p>
+
+<p>plan C 就是自己代码实现启动屏</p>
+
+<p>当然砍掉这个需求是最棒的！</p>
+
+<h2 id="nslocale">NSLocale</h2>
+
+<p>幸运的是在 iOS 系统里，NSLocale 就是专门为语言区域性差异处理而存在的。</p>
+
+<p>时间和日期</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>=== 初始化
+NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:@"zh"];
+    
+NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
+fmt.dateStyle = NSDateFormatterLongStyle;
+fmt.locale = locale;
+
+NSLog(@"%@", [fmt stringFromDate:[NSDate date]]);
+
+=== 当 app 语言变更时，需要更新 locale
+fmt.locale = newLanguageLocale;
+
+=== 如果使用的是 dateFormatFromTemplate 初始化
+=== 那么语言更新时，要刷新 dateFormat 和 locale
+fmt.dateFormat = [NSDateFormatter dateFormatFromTemplate:@"dMMM" options:0 locale:self.locale];
+fmt.locale = newLanguageLocale;
+// 输出中文1月1日，英文Apr 1
+</code></pre></div></div>
+
+<p>数字</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:@"de"];
+
+NSNumberFormatter *fmt = [[NSNumberFormatter alloc] init];
+fmt.numberStyle = NSNumberFormatterDecimalStyle;
+fmt.locale = locale;
+
+NSLog(@"%@", [fmt stringFromNumber:@(1000.01)]);
+</code></pre></div></div>
+
+<h2 id="单复数处理strings-file-和-stringsdict-file">单复数处理(Strings File 和 Stringsdict File)</h2>
+
+<p>Stringsdict 是专门用来处理单复数的。</p>
+
+<p>比如我在 Strings File 里定义了一个 key</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>英文
+"lg_days" = "%ld days"
+
+中文
+"lg_days" = "%ld天"
+</code></pre></div></div>
+
+<p>对于英文使用者，有「1 day」 和「2 days」的差别。</p>
+
+<p>这里有2种处理方式</p>
+
+<p>你可以把 <code class="highlighter-rouge">"%ld days"</code> 写成 <code class="highlighter-rouge">%ld day(s)</code></p>
+
+<p>或者使用 <code class="highlighter-rouge">Stringsdict</code>。</p>
+
+<p>将 Stringsdict 的文件名命名与 Strings 一致。在英文和中文的 Stringsdict 填写如下</p>
+
+<p>能发现，英文需要处理 zero、one、other 的情况，中文只需要处理 zero、other 的情况。</p>
+
+<p>不过，如果和 Android 一起开发共同管理 key，可能需要把 zero 单独拿出来不在此处处理。因为安卓系统将英语使用者的 zero 无效化，不予处理，即安卓只会处理 one 和 other。</p>
+
+<p>英文</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;plist version="1.0"&gt;
+&lt;dict&gt;
+	&lt;key&gt;lg_days&lt;/key&gt;
+	&lt;dict&gt;
+		&lt;key&gt;NSStringLocalizedFormatKey&lt;/key&gt;
+		&lt;string&gt;%#@VARIABLE@&lt;/string&gt;
+		&lt;key&gt;VARIABLE&lt;/key&gt;
+		&lt;dict&gt;
+			&lt;key&gt;NSStringFormatSpecTypeKey&lt;/key&gt;
+			&lt;string&gt;NSStringPluralRuleType&lt;/string&gt;
+			&lt;key&gt;NSStringFormatValueTypeKey&lt;/key&gt;
+			&lt;string&gt;ld&lt;/string&gt;
+			&lt;key&gt;zero&lt;/key&gt;
+			&lt;string&gt;none&lt;/string&gt;
+			&lt;key&gt;one&lt;/key&gt;
+			&lt;string&gt;1 day&lt;/string&gt;
+			&lt;key&gt;other&lt;/key&gt;
+			&lt;string&gt;%ld days&lt;/string&gt;
+		&lt;/dict&gt;
+	&lt;/dict&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+</code></pre></div></div>
+
+<p>中文</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;plist version="1.0"&gt;
+&lt;dict&gt;
+	&lt;key&gt;lg_days&lt;/key&gt;
+	&lt;dict&gt;
+		&lt;key&gt;NSStringLocalizedFormatKey&lt;/key&gt;
+		&lt;string&gt;%#@VARIABLE@&lt;/string&gt;
+		&lt;key&gt;VARIABLE&lt;/key&gt;
+		&lt;dict&gt;
+			&lt;key&gt;NSStringFormatSpecTypeKey&lt;/key&gt;
+			&lt;string&gt;NSStringPluralRuleType&lt;/string&gt;
+			&lt;key&gt;NSStringFormatValueTypeKey&lt;/key&gt;
+			&lt;string&gt;ld&lt;/string&gt;
+			&lt;key&gt;zero&lt;/key&gt;
+			&lt;string&gt;当天&lt;/string&gt;
+			&lt;key&gt;other&lt;/key&gt;
+			&lt;string&gt;%ld天&lt;/string&gt;
+		&lt;/dict&gt;
+	&lt;/dict&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+</code></pre></div></div>
+
+<p>在 Xcode 里打开即是这样</p>
+
+<p><img src="/_img/20190801/stringsdict.png" alt="stringsdict.png" /></p>
+
+<p>1 即为 strings 文件里的 key</p>
+
+<p>2 VARIABLE 可以换名，自定义需要替换的字符，格式为 <code class="highlighter-rouge">%#@自定义key@</code></p>
+
+<p>3 即2的定义的那个key</p>
+
+<p>4 层级和 lg_days 相同，是另外一个 key</p>
+
+<h3 id="stringsdict的一个系统坑">stringsdict的一个系统坑</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NSString *str1 = [NSString localizedStringWithFormat:NSLocalizedString(@"lg_days", nil), 1];
+NSString *str2 = [NSString localizedStringWithFormat:NSLocalizedString(@"lg_days", nil), 2];
+NSLog(@"%@, %@", str1, str2);
+</code></pre></div></div>
+
+<p>上面这段，我的目标输出是 1 day 和 2 days。</p>
+
+<p>但这里会遇到一个坑。</p>
+
+<p>用模拟器（英文）测试发现完全没问题，但是真机使用的中文系统测试却得到 1 days。</p>
+
+<p>最后发现原来 stringsdict 是和 <code class="highlighter-rouge">NSLocale currentLocale</code> 联动的，并不是<code class="highlighter-rouge">AppleLanguages</code>。因为中文只处理zero 和 other，所以对于使用中文系统的人来说 1 走 other 流程。</p>
+
+<p>我们需要对 NSString 使用 locale，使用你 app 内语言相关的 locale。 例如：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en"];
+
+NSString *format = NSLocalizedString(@"lg_days", nil);
+NSString s = [[NSString alloc] initWithFormat:format locale:locale, 1];
+</code></pre></div></div>
+
+<h2 id="实战优化">实战优化</h2>
+
+<h4 id="一缓存formatter">一、缓存Formatter</h4>
+
+<p>无论 NSDateFormatter 还是 NSNumberFormatter 都是特别损耗性能的，Apple 自己也建议使用单例来管理缓存对象。</p>
+
+<p><img src="/_img/20190801/cache.png" alt="cache.png" /></p>
+
+<h4 id="二ui-刷新问题">二、UI 刷新问题</h4>
+
+<p>当语言变化时，收到通知的非活跃的 UI 最好做延迟刷新。</p>
+
+<p>一是为了避免语言切换时，大数量的 cpu 暴涨。二是存在刷新先后顺序的冲突。</p>
+
+<p>比如，你的一个页面用到了缓存的 NSDateFormatter，你必须要保证 NSDateFormatter 这个实例是最先刷新，拿到的 string 才是对应语言的。所以非存活页面的 UI 不能抢刷新。</p>
+
+<h2 id="测试工具">测试工具</h2>
+
+<p>Xcode 提供了一些国际化测试的选项。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Double-Length Pseudolanguage 是把你的国际化文字加长到2倍，以测试布局是否还正确。
+Right-to-Left Pseudolanguage 就是类似阿拉伯语使用者的左右相反
+Accented Pseudolanguage 是带音调的语言，如果固定高度的 label 可能会出现显示不全的问题。
+Bounded String Pseudolanguage 是给所有的语言加个中括号
+Right-to-Left Pseudolanguage with Right-to-Left String 是在第2种情况下文字也反向。
+</code></pre></div></div>
+
+<p><img src="/_img/20190801/testXcode.png" alt="testXcode.png" /></p>
+
+<h2 id="参考">参考</h2>
+<p><a href="https://objccn.io/issue-9-3/">ObjC 中国 - 字符串本地化</a></p>
+
+<p><a href="https://developer.apple.com/design/human-interface-guidelines/ios/icons-and-images/launch-screen/">Apple Human Interface Guidelines - Launch Screen</a></p>
+
+<p><a href="http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html">UNICODE LOCALE DATA MARKUP LANGUAGE(日期国际化)</a></p>
+
+<p><a href="http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html">Language Plural Rules(语言单复数)</a></p>
+
+<p><a href="https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPInternational/StringsdictFileFormat/StringsdictFileFormat.html">Apple - Stringsdict File Format</a></p>
+
+<p><a href="https://www.jianshu.com/p/f191e4c8a299">格式化显示日期/时间的一点总结
+</a></p>
+
+<p><a href="https://forums.developer.apple.com/thread/26051">Why locale affects plural rules in iOS 9?</a></p>
+
+<p><a href="https://juejin.im/post/5b90ea53e51d450ea131ef81">掘金 - iOS语言国际化/本地化-实践总结</a></p>
+
+
+      <footer class="site-footer">
+        <span class="site-footer-credits">This page was generated by <a href="/">Feierbn</a> with <a href="https://jekyllrb.com/">Jekyll</a> using <a href="https://github.com/pages-themes/cayman">Cayman theme</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>
