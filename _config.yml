@@ -3,7 +3,7 @@ SEOTitle: Feierbn Blog
 description: "看过我的文，我们就是朋友了~「无中生友警告❗️」"
 keyword: "Feierbn, pengyj, pengelement, iOS"
 url: "https://pengyj.github.io"
-google_analytics:
+google_analytics: UA-147386994-1
 theme: jekyll-theme-cayman
 paginate: 15
 paginate_path: "page:num"
