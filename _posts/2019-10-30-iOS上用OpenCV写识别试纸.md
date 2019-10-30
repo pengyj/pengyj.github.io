@@ -48,7 +48,6 @@ Cocoapods 就能搞定了。并不像网上说的，你需要处理一堆引用b
 
 ```
 pod 'OpenCV', '~> 4.1.0'
-
 ```
 
 在等待的过程中，发现了一篇非常有意思的 OpenCV 在 pod 时都做了什么的分析，让人长见识。[糖炒小虾 - I have a pod, I have a cartha](http://www.voidcn.com/article/p-xmupzkvq-bbs.html)
