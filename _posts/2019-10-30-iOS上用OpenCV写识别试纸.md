@@ -316,8 +316,7 @@ for( int i = 0; i < contours.size(); i++ ){
 
 [才才才 - 利用OpenCV提取图像中的矩形区域（PPT屏幕等）](https://segmentfault.com/a/1190000013925648)
 
-[傻傻小萝卜
- - OpenCV(iOS)的边缘检测和Canny算子](https://www.jianshu.com/p/40f27163d355)
+[傻傻小萝卜 - OpenCV(iOS)的边缘检测和Canny算子](https://www.jianshu.com/p/40f27163d355)
 
  [太一吾鱼水- OpenCV矩形检测](https://www.cnblogs.com/yhlx125/p/7501400.html)
  
