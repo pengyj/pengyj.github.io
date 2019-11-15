@@ -34,7 +34,7 @@ OpenCV 从2.4之后，开始支持人脸识别。相对于 iOS 系统级的，�
 
 另外，你在 OC 文件里是 .m 可能需要改名为 .mm，或者修改编译类型，才能使用 OpenCV。
 
-![compile_type](/_img/20191115/compile_type)
+![compile_type](/_img/20191115/compile_type.png)
 
 ## 图片识别
 
