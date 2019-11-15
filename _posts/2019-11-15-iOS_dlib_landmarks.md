@@ -87,9 +87,9 @@ opencv.h 是 dlib 专门用来处理 Mat 和 dlib::array2d 数据结构转换的
 
 如果你使用 RGB，那么对应，就应该使用 rgb_pixel 和 bgr_pixel 的格式。
 
-opencv 的默认格式是 bgr，所以对应应该使用 ```bgr_pixel```。但如果是 UIImageToMat 转过来的，它是带 alpha通道的，所以要使用 ```rbg_alpha_pixel```。
+opencv 的默认格式是 bgr，所以对应应该使用 ```bgr_pixel```。但如果是 UIImageToMat 转过来的，它是带 alpha通道的，所以要使用 ```rgb_alpha_pixel```。
 
-一个有趣的点，是 opencv 里默认的是 BGR，但是我们平时经常说和用的，都是RBG。这就出现了通道顺序的问题，如果没有注意，可能出现图片颜色失真的问题。找到一篇文章 [Satya Mallick: Why does OpenCV use BGR color format ?](https://www.learnopencv.com/why-does-opencv-use-bgr-color-format/) 解释大意就是：历史遗留问题。那个有趣的铁轨的故事，差不多。可能当时的厂商们比较通用 BGR，但是现在又比较通用 RBG。虽然如此，opencv 的库，还是给出了各种格式之间的转换，非常贴心易用。这在使用上应该没有什么难度，只是需要额外注意这个问题而已。
+一个有趣的点，是 opencv 里默认的是 BGR，但是我们平时经常说和用的，都是RGB。这就出现了通道顺序的问题，如果没有注意，可能出现图片颜色失真的问题。找到一篇文章 [Satya Mallick: Why does OpenCV use BGR color format ?](https://www.learnopencv.com/why-does-opencv-use-bgr-color-format/) 解释大意就是：历史遗留问题。那个有趣的铁轨的故事，差不多。可能当时的厂商们比较通用 BGR，但是现在又比较通用 RGB。虽然如此，opencv 的库，还是给出了各种格式之间的转换，非常贴心易用。这在使用上应该没有什么难度，只是需要额外注意这个问题而已。
 
 ![dlib_Image_Processing](/_img/20191115/dlib_Image_Processing.png)
 
