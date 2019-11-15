@@ -8,7 +8,7 @@ description: 非常好用
 
 ## 环境
 
-OpenCV 4.2.1 (CocoaPods 管理)
+OpenCV 4.1.0 (CocoaPods 管理)
 
 Xcode11
 
@@ -42,7 +42,7 @@ OpenCV 从2.4之后，开始支持人脸识别。相对于 iOS 系统级的，�
 
 首先你需要额外把 opencv 的源码包下载回来，然后找到 /data 下的训练好的 xml 模型来使用。
 
-比如我下载的路径是：opencv-4.1.2/data/haarcascades/haarcascade_frontalface_alt2
+比如我下载的路径是：opencv-4.1.0/data/haarcascades/haarcascade_frontalface_alt2
 
 ![file_xml](/_img/20191115/file_xml.png)
 
