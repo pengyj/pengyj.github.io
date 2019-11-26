@@ -28,6 +28,7 @@ OpenCV 从2.4之后，开始支持人脸识别。相对于 iOS 系统级的，�
 #import <opencv2/imgcodecs/ios.h> // Mat 和 UIImage互转
 #import <opencv2/objdetect/objdetect.hpp> // 物体识别相关的类
 #import <opencv2/imgproc.hpp> // 颜色空间 cvtColor 等
+#import <opencv2/videoio/cap_ios.h> // AVFoundation相机封装
 
 #endif
 ```
