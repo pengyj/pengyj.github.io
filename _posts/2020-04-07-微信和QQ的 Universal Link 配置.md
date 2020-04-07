@@ -20,7 +20,7 @@ https://www.exmaple.com/app1/
 
 https://www.exmaple.com/test/app2/
 
-```www.example.com```是我写的测试域名，你们需要用替换为自己的后台的域名。
+这个 ```www.example.com``` 是我写的测试域名，你们需要用替换为自己的后台的域名。
 
 ## iOS 端的证书和项目配置
 
