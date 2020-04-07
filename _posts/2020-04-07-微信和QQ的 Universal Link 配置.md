@@ -94,7 +94,7 @@ URL Scehema的配置，请使用tencent开头的编号。
 
 首次分享和非首次分享情形与微信一致。
 
-![QQ](/_img/20200407/QQ.png)
+![QQ](/_img/20200407/QQ.jpg)
 
 ![error](/_img/20200407/error.png)
 
